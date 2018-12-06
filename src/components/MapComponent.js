@@ -1,5 +1,17 @@
 import React from 'react'
+import styled from 'styled-components'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker, InfoWindow } from "react-google-maps"
+
+const InfoStyle = styled.div`
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+    align-items:center;
+    font-size:1em;
+`
+const FieldStyle = styled.div`
+    padding: 1px;
+`
 
 class MapComponent extends React.Component {
     constructor(props) {
@@ -72,8 +84,6 @@ class MapComponent extends React.Component {
                                 position={{ lat: x.coordinates[0], lng: x.coordinates[1] }}
                                 onClick={this.onClickMarker.bind(this,x.key)}
                                 icon={{
-                                    // url:'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
-                                    // url: <MarkerIcon />,
                                     url: require('../images/marker.png'),
                                     scaledSize: new window.google.maps.Size(55, 55),
                                     origin: new window.google.maps.Point(0, 0),
@@ -82,11 +92,15 @@ class MapComponent extends React.Component {
                             >
                                 {isActive &&
                                     < InfoWindow onCloseClick={this.onCloseBox} >
-                                        <div>
-                                            {x.name}
+                                        <InfoStyle>
+                                            <FieldStyle>
+                                                {x.name}
+                                            </FieldStyle>
                                             <br/>
-                                            {x.coordinates[0].toFixed(2) + ', ' + x.coordinates[1].toFixed(2)}
-                                        </div>
+                                            <FieldStyle>
+                                                {x.coordinates[0].toFixed(4) + ', ' + x.coordinates[1].toFixed(4)}
+                                            </FieldStyle>
+                                        </InfoStyle>
                                     </InfoWindow>
                                 }
                             </Marker>

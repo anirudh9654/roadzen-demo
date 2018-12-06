@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {saveSelectedPlace, removeSelectedPlace} from '../redux/actions'
 import { MapComponent, TileComponent } from '../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner, faMapMarkerAlt, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -31,11 +31,21 @@ const LocationsContainerStyle = styled.div`
     align-items:center;
 `
 
+const LeftScrollStyle = styled.div`
+    position:absolute;
+    left:10px;
+`
+
+const RightScrollStyle = styled.div`
+    position:absolute;
+    left:98%;
+`
+
 class MapContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activePlaceKey:null
+            scrollPosition:0
         }
     }
 
@@ -45,6 +55,31 @@ class MapContainer extends React.Component {
 
     handleUnSelectPlace = () => {
         this.props.removeSelectedPlace()
+    }
+
+    handleScrollLeft = () => {
+        const {scrollPosition} = this.state
+        if(scrollPosition > 10){
+            this._scrollRef.scrollLeft = scrollPosition - 100
+            this.setState(prevState => {
+                return {
+                    scrollPosition: prevState.scrollPosition - 100
+                }
+            })
+        }
+
+
+    }
+
+    handleScrollRight = () => {
+        const {scrollPosition} = this.state
+        this._scrollRef.scrollLeft = scrollPosition + 100
+        this.setState(prevState => {
+            return {
+                scrollPosition: prevState.scrollPosition + 100
+            }
+        })
+
     }
 
     render() {
@@ -76,7 +111,7 @@ class MapContainer extends React.Component {
                     }
                 />
 
-                <LocationsContainerStyle>
+                <LocationsContainerStyle >
                     <PerfectScrollbar containerRef={ref => this._scrollRef = ref} style={{ height:'200px',width:'100%', display:'flex' }} >
                         {
                             places.map((x,i) => {
@@ -97,6 +132,21 @@ class MapContainer extends React.Component {
                             })
                         }
                     </PerfectScrollbar>
+                    <LeftScrollStyle onClick={this.handleScrollLeft} >
+                        <FontAwesomeIcon 
+                            icon={faChevronLeft}
+                            color={'#8FB4DF'}
+                            size={'2x'}
+                        />
+                    </LeftScrollStyle>
+
+                    <RightScrollStyle onClick={this.handleScrollRight} >
+                        <FontAwesomeIcon 
+                            icon={faChevronRight}
+                            color={'#8FB4DF'}
+                            size={'2x'}
+                        />
+                    </RightScrollStyle>
                 </LocationsContainerStyle>
             </RootStyle>
         );
